@@ -1,0 +1,132 @@
+<html>
+<SCRIPT>
+    var pos = 0;
+    const pacArray = [
+        ['PacMan1.png', 'PacMan2.png'],
+        ['PacMan3.png', 'PacMan4.png']
+    ];
+    var direction = 0;
+    const pacMen = []; // This array holds all the pacmen
+
+    function setToRandom(scale) {
+        return {
+            x: Math.random() * scale,
+            y: Math.random() * scale
+        }
+    }
+    // Factory to make a PacMan at a random position with random velocity
+    function makePac() {
+        // returns an object with random values scaled {x: 33, y: 21}
+        let velocity = setToRandom(10); // {x:?, y:?}
+        let position = setToRandom(200);
+        // Add image to div id = game
+        let game = document.getElementById('game');
+        let newimg = document.createElement('img');
+        newimg.style.position = 'absolute';
+        newimg.src = 'PacMan1.png';
+        newimg.width = 100;
+        newimg.style.left = position.x;
+        newimg.style.top = position.y;
+        game.appendChild(newimg);
+        // return details in an object
+        return {
+            position,
+            velocity,
+            newimg
+        }
+    }
+
+    function update() {
+        //loop over pacmen array and move each one and move image in DOM
+        pacMen.forEach((item) => {
+            checkCollisions(item)
+            item.position.x += item.velocity.x;
+            item.position.y += item.velocity.y;
+
+            item.newimg.style.left = item.position.x;
+            item.newimg.style.top = item.position.y;
+        })
+        setTimeout(update, 20);
+    }
+
+    function checkCollisions(item) {
+        if (item.position.x + item.velocity.x + item.newimg.width > window.innerWidth || 
+            item.position.x + item.velocity.x < 0) {item.velocity.x = -item.velocity.x;}
+        if (item.position.y + item.velocity.y + item.newimg.height > window.innerHeight || 
+            item.position.y + item.velocity.y < 0) {item.velocity.y = -item.velocity.y;}
+    }
+
+    function makeOne() {
+        pacMen.push(makePac()); // add a new PacMan
+    }
+
+// changes colors of the background dynamically
+
+const hex = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, "A", "B", "C", "D", "E", "F"];
+// array for hex color generator
+
+const btn = document.getElementById('btn');
+
+// btn functions, loops over hex array
+btn.addEventListener('click', function(){
+    let hexColor = '#';
+    for(let i = 0; i < 6; i++){
+        hexColor += hex[getRandomNum()];
+    }
+document.body.style.backgroundColor = hexColor;
+})
+
+// callback func for random combination
+function getRandomNum(){
+    return Math.floor(Math.random() * hex.length);
+}
+</SCRIPT>
+
+<style>
+.btn-container {
+    max-width: 100vw;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    place-items: center;
+    gap: 2rem
+}
+.btn {
+    padding: 0.5rem 0.8rem;
+    background: white;
+    color: #000;
+    box-sizing: border-box;
+    border-radius: 0.5rem;
+    border: 2px solid black;
+    z-index: 1000;
+    cursor: pointer;
+    transition: all 0.4s linear;
+}
+
+.btn:hover {
+    background: black;
+    color: white;
+    border: 2px solid white;
+}
+
+.home-btn a{
+    text-decoration: none;
+    color: inherit; 
+}
+</style>
+
+<body>
+    
+    <div id='game'>
+        <div class="btn-container">
+        <button onclick='makeOne()' width='200' height='30' class="btn">Make PacMen</button>
+        <button onclick='update()' width='200' height='30' class="btn">Start Game</button>
+        <button class="btn" id="btn">Color Changer</button>
+        <button class="btn home-btn"><a href="http://willh87.github.io" id="linkHome">Home</a></button>
+    </div>
+    </div>
+</body>
+<script>
+
+</script>
+
+</html>
